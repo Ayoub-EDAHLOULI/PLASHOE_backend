@@ -1,5 +1,6 @@
 const express = require("express");
-const userRouter = require("./routes/user");
+const userRouter = require("./routes/userRouter");
+const authRouter = require("./routes/authRouter");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,6 +10,11 @@ const hostman = process.env.HOSTMAN || "127.0.0.1";
 app.use(express.json());
 
 //Routes
+
+//Auth routes
+app.use("/api/v1", authRouter);
+
+//User routes
 app.use("/api/v1", userRouter);
 
 //Server
