@@ -1,0 +1,180 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+//Defines the models for the database
+
+
+//User Model
+model User {
+  id        Int      @id @default(autoincrement())
+  username      String?
+  email     String   @unique
+  password  String
+  role      Role    @default(CUSTOMER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //Relationships
+  address   Address?
+  userInfo  UserInfo?
+  products  Product[]
+  cart     Cart[]
+  orders   Order[]
+  reviews  Review[]
+  payments Payment[]
+}
+
+//Adress Model
+model Address {
+  id        Int      @id @default(autoincrement())
+  streetName      String
+  appartName      String
+  city      String
+  state      String
+  zip      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int @unique
+}
+
+//User Info
+model UserInfo {
+  id        Int      @id @default(autoincrement())
+  firstname      String?
+  lastname      String?
+  phone      Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int @unique
+}
+
+//Product Model
+model Product {
+  id        Int      @id @default(autoincrement())
+  name      String
+  description      String @db.Text
+  price      Float
+  image     String?
+  stock      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //Relationships
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  cart     Cart[]
+  orderItems      OrderItem[]
+  reviews  Review[]
+  category Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+}
+
+//Cart Model
+model Cart {
+  id        Int      @id @default(autoincrement())
+  quantity      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //Relationships
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  product      Product     @relation(fields: [productId], references: [id])
+  productId    Int
+  orders      Order[]
+}
+
+//Order Model
+model Order {
+  id        Int      @id @default(autoincrement())
+  order_date      DateTime
+  total      Float
+  shipping_date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //Relationships
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  cart    Cart    @relation(fields: [cartId], references: [id])
+  cartId    Int
+  orderItems      OrderItem[]
+  payments Payment[]
+}
+
+//Order Item Model
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  quantity      Int
+  price      Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //Relationships
+  order      Order     @relation(fields: [orderId], references: [id])
+  orderId    Int
+  product      Product     @relation(fields: [productId], references: [id])
+  productId    Int
+}
+
+//Review Model
+model Review {
+  id        Int      @id @default(autoincrement())
+  rating      Int
+  comment      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //Relationships
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  product      Product     @relation(fields: [productId], references: [id])
+  productId    Int
+}
+
+//Payment Model
+model Payment {
+  id        Int      @id @default(autoincrement())
+  payment_date      DateTime
+  amount      Decimal @db.Decimal(10, 2)
+  payment_method      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //Relationships
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  order      Order     @relation(fields: [orderId], references: [id])
+  orderId    Int
+}
+
+//Category Model
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //Relationships
+  products  Product[]
+}
+
+//Enum for the Role
+enum Role {
+  ADMIN
+  CUSTOMER
+}
