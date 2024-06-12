@@ -31,7 +31,14 @@ const getOneProductService = async (id) => {
 };
 
 //POST a new product
-const createProductService = async (name, description, price, stock) => {
+const createProductService = async (
+  name,
+  description,
+  price,
+  stock,
+  userId,
+  categoryId
+) => {
   try {
     const newProduct = await prisma.product.create({
       data: {
@@ -39,6 +46,8 @@ const createProductService = async (name, description, price, stock) => {
         description,
         price,
         stock,
+        userId,
+        categoryId,
       },
     });
 

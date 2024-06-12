@@ -41,7 +41,12 @@ const getOneProduct = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     //Get the product data from the request body
-    const { name, description, price, stock } = req.body;
+    const { name, description, price, stock, categoryId } = req.body;
+
+    //Get the user id from the request
+    const userId = req.user.id;
+
+    console.log("User ID", userId);
 
     //Check if name, price, description and stock are provided
     if (!name || !price || !description || !stock) {
@@ -85,7 +90,9 @@ const createProduct = async (req, res) => {
       name,
       description,
       price,
-      stock
+      stock,
+      userId,
+      categoryId
     );
 
     //Return the product
