@@ -5,6 +5,8 @@ const { handleSuccess } = require("../utils/successHandler");
 const {
   getAllProductsService,
   getOneProductService,
+  createProductService,
+  checkProduct,
 } = require("../services/productServices");
 
 //Get all products
@@ -35,4 +37,62 @@ const getOneProduct = async (req, res) => {
   }
 };
 
-module.exports = { getAllProducts, getOneProduct };
+//Create a new product
+const createProduct = async (req, res) => {
+  try {
+    //Get the product data from the request body
+    const { name, description, price, stock } = req.body;
+
+    //Check if name, price, description and stock are provided
+    if (!name || !price || !description || !stock) {
+      throw new ErrorHandler(
+        400,
+        "Please provide name, price, description and stock"
+      );
+    }
+
+    console.log(name, price, description, stock);
+
+    //Check if the price and stock are numbers
+    if (isNaN(price) || isNaN(stock)) {
+      throw new ErrorHandler(400, "Price and stock must be numbers");
+    }
+
+    //Check if the price and stock are positive numbers
+    if (price < 0 || stock < 0) {
+      throw new ErrorHandler(400, "Price and stock must be positive numbers");
+    }
+
+    //Check if the price and stock are greater than 0
+    if (price <= 0 || stock <= 0) {
+      throw new ErrorHandler(400, "Price and stock must be greater than 0");
+    }
+
+    //Check if the name is a string
+    if (typeof name !== "string") {
+      throw new ErrorHandler(400, "Name must be a string");
+    }
+
+    //Check if the product already exists
+    const productExists = await checkProduct(name);
+    if (productExists) {
+      console.log("ProductExists", productExists);
+      throw new ErrorHandler(400, "Product already exists");
+    }
+
+    //Create the product
+    const newProduct = await createProductService(
+      name,
+      description,
+      price,
+      stock
+    );
+
+    //Return the product
+    handleSuccess(res, newProduct, 201, "Product created successfully");
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+module.exports = { getAllProducts, getOneProduct, createProduct };

@@ -1,4 +1,6 @@
 const prisma = require("../server");
+const { ErrorHandler, handleError } = require("../utils/errorHandler");
+const { handleSuccess } = require("../utils/successHandler");
 
 //GET all products
 const getAllProductsService = async () => {
@@ -28,4 +30,39 @@ const getOneProductService = async (id) => {
   }
 };
 
-module.exports = { getAllProductsService, getOneProductService };
+//POST a new product
+const createProductService = async (name, description, price, stock) => {
+  try {
+    const newProduct = await prisma.product.create({
+      data: {
+        name,
+        description,
+        price,
+        stock,
+      },
+    });
+
+    //Return the new product
+    return newProduct;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
+//Check if a product already exists
+const checkProduct = async (name) => {
+  const product = await prisma.product.findFirst({
+    where: {
+      name,
+    },
+  });
+
+  return product ? true : false;
+};
+
+module.exports = {
+  getAllProductsService,
+  getOneProductService,
+  createProductService,
+  checkProduct,
+};
