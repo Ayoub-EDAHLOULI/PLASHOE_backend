@@ -1,6 +1,5 @@
 const prisma = require("../server");
-const { ErrorHandler, handleError } = require("../utils/errorHandler");
-const { handleSuccess } = require("../utils/successHandler");
+const { ErrorHandler } = require("../utils/errorHandler");
 
 //GET all products
 const getAllProductsService = async () => {
