@@ -29,4 +29,40 @@ const createCategoryService = async (name) => {
   }
 };
 
-module.exports = { getAllCategoriesService, createCategoryService };
+//Check if a category already exists
+const checkCategory = async (name) => {
+  try {
+    const category = await prisma.category.findFirst({
+      where: {
+        name,
+      },
+    });
+
+    return category;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
+//GET a single category
+const getOneCategoryService = async (id) => {
+  try {
+    const category = await prisma.category.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
+
+    //Return the category
+    return category;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
+module.exports = {
+  getAllCategoriesService,
+  createCategoryService,
+  getOneCategoryService,
+  checkCategory,
+};

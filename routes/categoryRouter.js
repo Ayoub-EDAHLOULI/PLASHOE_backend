@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-const { getAllCategories, createCategory } = require("../api/categoryApi");
+const {
+  getAllCategories,
+  createCategory,
+  getOneCategory,
+} = require("../api/categoryApi");
 
 //Auth and Authorization Middleware
 const {
@@ -16,5 +20,6 @@ router.post(
   isAuthorized("ADMIN"),
   createCategory
 );
+router.get("/category/:id", getOneCategory);
 
 module.exports = router;
