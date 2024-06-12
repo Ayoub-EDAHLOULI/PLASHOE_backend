@@ -58,7 +58,7 @@ const register = async (req, res) => {
     );
 
     //Return the user
-    handleSuccess(res, newUser);
+    handleSuccess(res, newUser, 201, "User created successfully");
   } catch (error) {
     handleError(res, error);
   }
