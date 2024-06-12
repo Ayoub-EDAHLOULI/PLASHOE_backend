@@ -12,4 +12,20 @@ const getAllProductsService = async () => {
   }
 };
 
-module.exports = { getAllProductsService };
+//GET a single product
+const getOneProductService = async (id) => {
+  try {
+    const product = await prisma.product.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
+
+    //Return the product
+    return product;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
+module.exports = { getAllProductsService, getOneProductService };
