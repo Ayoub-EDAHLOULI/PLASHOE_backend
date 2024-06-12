@@ -13,4 +13,20 @@ const getAllCategoriesService = async () => {
   }
 };
 
-module.exports = { getAllCategoriesService };
+//POST a new category
+const createCategoryService = async (name) => {
+  try {
+    const newCategory = await prisma.category.create({
+      data: {
+        name,
+      },
+    });
+
+    //Return the new category
+    return newCategory;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
+module.exports = { getAllCategoriesService, createCategoryService };
