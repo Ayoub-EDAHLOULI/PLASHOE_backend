@@ -1,6 +1,7 @@
 const { ErrorHandler, handleError } = require("../../utils/errorHandler");
 const { handleSuccess } = require("../../utils/successHandler");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 //User Services
 const {
@@ -90,8 +91,22 @@ const login = async (req, res) => {
       throw new ErrorHandler(400, "Invalid credentials");
     }
 
+    //Create a token
+    const token = jwt.sign(
+      {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: process.env.JWT_EXPIRE,
+      }
+    );
+
     //Return the user
-    handleSuccess(res, user, 200, "Login successful");
+    handleSuccess(res, { token }, 200, "Login successful");
   } catch (error) {
     handleError(res, error);
   }
