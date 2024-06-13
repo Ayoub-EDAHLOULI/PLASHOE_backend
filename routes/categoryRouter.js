@@ -5,6 +5,7 @@ const {
   getAllCategories,
   createCategory,
   getOneCategory,
+  updateCategory,
 } = require("../api/categoryApi");
 
 //Auth and Authorization Middleware
@@ -20,6 +21,8 @@ router.post(
   isAuthorized("ADMIN"),
   createCategory
 );
-router.get("/category/:id", getOneCategory);
+router
+  .get("/category/:id", getOneCategory)
+  .put("/category/:id", isAuthenticated, isAuthorized("ADMIN"), updateCategory);
 
 module.exports = router;

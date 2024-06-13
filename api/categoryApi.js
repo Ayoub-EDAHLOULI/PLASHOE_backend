@@ -7,6 +7,7 @@ const {
   createCategoryService,
   getOneCategoryService,
   checkCategory,
+  updateCategoryService,
 } = require("../services/categoryServices");
 
 //GET all categories
@@ -70,4 +71,48 @@ const createCategory = async (req, res) => {
   }
 };
 
-module.exports = { getAllCategories, createCategory, getOneCategory };
+//Update a category
+const updateCategory = async (req, res) => {
+  try {
+    //Get the category ID from the request params
+    const { id } = req.params;
+
+    //Get the category data from the request body
+    const { name } = req.body;
+
+    //Check if the name is provided
+    if (!name) {
+      throw new ErrorHandler(400, "Please provide a name");
+    }
+
+    //Check if the name is the same as the current one
+    const category = await getOneCategoryService(id);
+    if (category.name === name) {
+      throw new ErrorHandler(
+        400,
+        "Category name is the same as the current one"
+      );
+    }
+
+    //Check if the category already exists
+    const categoryExists = await checkCategory(name);
+    if (categoryExists) {
+      throw new ErrorHandler(400, "Category already exists");
+    }
+
+    //Update the category
+    const updatedCategory = await updateCategoryService(id, name);
+
+    //Return the updated category
+    handleSuccess(res, updatedCategory, 200, "Category updated successfully");
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+module.exports = {
+  getAllCategories,
+  createCategory,
+  getOneCategory,
+  updateCategory,
+};

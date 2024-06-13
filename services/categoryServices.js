@@ -60,9 +60,29 @@ const getOneCategoryService = async (id) => {
   }
 };
 
+//Update a category
+const updateCategoryService = async (id, name) => {
+  try {
+    const updatedCategory = await prisma.category.update({
+      where: {
+        id: parseInt(id),
+      },
+      data: {
+        name,
+      },
+    });
+
+    //Return the updated category
+    return updatedCategory;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
 module.exports = {
   getAllCategoriesService,
   createCategoryService,
   getOneCategoryService,
   checkCategory,
+  updateCategoryService,
 };
