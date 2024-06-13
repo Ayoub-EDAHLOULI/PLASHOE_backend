@@ -56,7 +56,18 @@ const createProduct = async (req, res) => {
       );
     }
 
-    console.log(name, price, description, stock);
+    console.log(
+      "Name",
+      name,
+      "Price",
+      price,
+      "Description",
+      description,
+      "Stock",
+      stock,
+      "CatgoryId",
+      categoryId
+    );
 
     //Check if the price and stock are numbers
     if (isNaN(price) || isNaN(stock)) {

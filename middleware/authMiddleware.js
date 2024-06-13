@@ -8,12 +8,12 @@ const isAuthenticated = async (req, res, next) => {
   const bearerHeader = req.headers["authorization"];
 
   if (!bearerHeader || !bearerHeader.startsWith("Bearer "))
-    throw new ErrorHandler(401, "Access denied. No token provided");
+    throw new ErrorHandler(400, "Access denied. No token provided");
 
   const token = bearerHeader.split(" ")[1];
 
   //Check if the token exists
-  if (!token) throw new ErrorHandler(401, "Access denied. No token provided");
+  if (!token) throw new ErrorHandler(400, "Access denied. No token provided");
 
   try {
     //Verify the token
@@ -31,7 +31,7 @@ const isAuthenticated = async (req, res, next) => {
 
     next();
   } catch (error) {
-    throw new ErrorHandler(401, "Access denied. Invalid token");
+    handleError(res, error);
   }
 };
 
@@ -39,8 +39,7 @@ const isAuthenticated = async (req, res, next) => {
 const isAuthorized = (role) => {
   return (req, res, next) => {
     if (req.user.role !== role)
-      throw new ErrorHandler(403, "Access denied. Not authorized");
-
+      handleError(res, new ErrorHandler(403, "Access denied. Not authorized"));
     next();
   };
 };
