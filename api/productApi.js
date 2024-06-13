@@ -7,6 +7,7 @@ const {
   getOneProductService,
   createProductService,
   checkProduct,
+  updateProductService,
 } = require("../services/productServices");
 
 //Get all products
@@ -113,4 +114,101 @@ const createProduct = async (req, res) => {
   }
 };
 
-module.exports = { getAllProducts, getOneProduct, createProduct };
+//Update a product
+const updateProduct = async (req, res) => {
+  try {
+    //Get the product ID from the request params
+    const { id } = req.params;
+
+    //Get the product data from the request body
+    const { name, description, price, stock, categoryId } = req.body;
+
+    //Get the user id from the request
+    const userId = req.user.id;
+
+    //Check if the body not empty
+    if (Object.keys(req.body).length === 0) {
+      throw new ErrorHandler(400, "Please provide data to update");
+    }
+
+    //Take just the values that are not empty
+    const productData = {
+      name,
+      description,
+      price,
+      stock,
+      categoryId,
+    };
+
+    //Remove the empty values
+    Object.keys(productData).forEach(
+      (key) => productData[key] === undefined && delete productData[key]
+    );
+
+    console.log("User ID", userId);
+    console.log("ProductData", productData);
+
+    //Check if the price is not empty and a numbers
+    if (productData.price && isNaN(productData.price)) {
+      throw new ErrorHandler(400, "Price must be numbers");
+    }
+
+    //Check if the stock is not empty and a numbers
+    if (productData.stock && isNaN(productData.stock)) {
+      throw new ErrorHandler(400, "Stock must be numbers");
+    }
+
+    //Check if the price is not empty and a positive numbers
+    if (productData.price && productData.price < 0) {
+      throw new ErrorHandler(400, "Price must be positive numbers");
+    }
+
+    //Check if the stock is not empty and a positive numbers
+    if (productData.stock && productData.stock < 0) {
+      throw new ErrorHandler(400, "Stock must be positive numbers");
+    }
+
+    //Check if the price are greater than 0
+    if (productData.price && productData.price <= 0) {
+      throw new ErrorHandler(400, "Price must be greater than 0");
+    }
+
+    //Check if the stock are greater than 0
+    if (productData.stock && productData.stock <= 0) {
+      throw new ErrorHandler(400, "Stock must be greater than 0");
+    }
+
+    //Check if the name is a string
+    if (productData.name && typeof productData.name !== "string") {
+      throw new ErrorHandler(400, "Name must be a string");
+    }
+
+    //Check if the product exists
+    const product = await getOneProductService(id);
+    if (!product) {
+      throw new ErrorHandler(404, "Product not found");
+    }
+
+    //Update the product
+    const updatedProduct = await updateProductService(
+      id,
+      productData.name,
+      productData.description,
+      productData.price,
+      productData.stock,
+      productData.categoryId
+    );
+
+    //Return the product
+    handleSuccess(res, updatedProduct, 200, "Product updated successfully");
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+module.exports = {
+  getAllProducts,
+  getOneProduct,
+  createProduct,
+  updateProduct,
+};

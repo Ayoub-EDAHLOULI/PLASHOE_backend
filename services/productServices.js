@@ -68,9 +68,40 @@ const checkProduct = async (name) => {
   return product ? true : false;
 };
 
+//Update a product
+const updateProductService = async (
+  id,
+  name,
+  description,
+  price,
+  stock,
+  categoryId
+) => {
+  try {
+    const updatedProduct = await prisma.product.update({
+      where: {
+        id: parseInt(id),
+      },
+      data: {
+        name,
+        description,
+        price,
+        stock,
+        categoryId,
+      },
+    });
+
+    //Return the updated product
+    return updatedProduct;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
 module.exports = {
   getAllProductsService,
   getOneProductService,
   createProductService,
   checkProduct,
+  updateProductService,
 };
