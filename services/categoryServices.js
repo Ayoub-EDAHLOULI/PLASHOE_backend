@@ -79,10 +79,27 @@ const updateCategoryService = async (id, name) => {
   }
 };
 
+//DELETE a category
+const deleteCategoryService = async (id) => {
+  try {
+    const deletedCategory = await prisma.category.delete({
+      where: {
+        id: parseInt(id),
+      },
+    });
+
+    //Return the deleted category
+    return deletedCategory;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
 module.exports = {
   getAllCategoriesService,
   createCategoryService,
   getOneCategoryService,
   checkCategory,
   updateCategoryService,
+  deleteCategoryService,
 };

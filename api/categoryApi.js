@@ -8,6 +8,7 @@ const {
   getOneCategoryService,
   checkCategory,
   updateCategoryService,
+  deleteCategoryService,
 } = require("../services/categoryServices");
 
 //GET all categories
@@ -109,10 +110,32 @@ const updateCategory = async (req, res) => {
     handleError(res, error);
   }
 };
+//DELETE a category
+const deleteCategory = async (req, res) => {
+  try {
+    //Get the category ID from the request params
+    const { id } = req.params;
+
+    //Check if the category exists
+    const category = await getOneCategoryService(id);
+    if (!category) {
+      throw new ErrorHandler(404, "Category not found");
+    }
+
+    //Delete the category
+    await deleteCategoryService(id);
+
+    //Return the success message
+    handleSuccess(res, null, 200, "Category deleted successfully");
+  } catch (error) {
+    handleError(res, error);
+  }
+};
 
 module.exports = {
   getAllCategories,
   createCategory,
   getOneCategory,
   updateCategory,
+  deleteCategory,
 };
