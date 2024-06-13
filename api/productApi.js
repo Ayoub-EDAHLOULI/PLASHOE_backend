@@ -8,6 +8,7 @@ const {
   createProductService,
   checkProduct,
   updateProductService,
+  deleteProductService,
 } = require("../services/productServices");
 
 //Get all products
@@ -206,9 +207,43 @@ const updateProduct = async (req, res) => {
   }
 };
 
+//Delete a product
+const deleteProduct = async (req, res) => {
+  try {
+    //Get the product ID from the request params
+    const { id } = req.params;
+
+    //Get the user id from the request
+    const userId = req.user.id;
+
+    //Check if the product exists
+    const product = await getOneProductService(id);
+    if (!product) {
+      throw new ErrorHandler(404, "Product not found");
+    }
+
+    //Check if the user is the owner of the product
+    if (product.userId !== userId) {
+      throw new ErrorHandler(
+        403,
+        "You are not authorized to delete this product"
+      );
+    }
+
+    //Delete the product
+    await deleteProductService(id);
+
+    //Return the product
+    handleSuccess(res, null, 204, "Product deleted successfully");
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
 module.exports = {
   getAllProducts,
   getOneProduct,
   createProduct,
   updateProduct,
+  deleteProduct,
 };
