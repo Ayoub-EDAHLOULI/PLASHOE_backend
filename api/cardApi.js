@@ -2,7 +2,10 @@ const { ErrorHandler, handleError } = require("../utils/errorHandler");
 const { handleSuccess } = require("../utils/successHandler");
 
 //Card Services
-const { createCardService } = require("../services/cardServices");
+const {
+  createCardService,
+  getUserCardService,
+} = require("../services/cardServices");
 const {
   getOneProductService,
   updateProductStockService,
@@ -64,4 +67,20 @@ const createCard = async (req, res) => {
   }
 };
 
-module.exports = { createCard };
+//GET the cards of a user
+const getUserCard = async (req, res) => {
+  try {
+    //Get the userId
+    const userId = req.user.id;
+
+    //Get the user card
+    const card = await getUserCardService(userId);
+
+    //Return the card
+    handleSuccess(res, card, 200, "User card retrieved successfully");
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+module.exports = { createCard, getUserCard };

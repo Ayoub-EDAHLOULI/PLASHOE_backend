@@ -28,4 +28,23 @@ const createCardService = async (userId, productId, quantity) => {
   }
 };
 
-module.exports = { createCardService };
+//GET the user card
+const getUserCardService = async (userId) => {
+  try {
+    const card = await prisma.cart.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        product: true,
+      },
+    });
+
+    //Return the card
+    return card;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
+module.exports = { createCardService, getUserCardService };
