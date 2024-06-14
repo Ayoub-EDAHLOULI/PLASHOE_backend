@@ -4,6 +4,7 @@ const authRouter = require("./routes/authRouter");
 const productRouter = require("./routes/productRouter");
 const categoryRouter = require("./routes/categoryRouter");
 const userInfoRouter = require("./routes/userInfoRouter");
+const addressRouter = require("./routes/addressRouter");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,6 +29,9 @@ app.use("/api/v1", categoryRouter);
 
 //User info routes
 app.use("/api/v1", userInfoRouter);
+
+//Address routes
+app.use("/api/v1", addressRouter);
 
 //Server
 app.listen(PORT, hostman, () => {
