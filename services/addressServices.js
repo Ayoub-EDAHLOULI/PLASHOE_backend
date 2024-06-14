@@ -47,4 +47,7 @@ const createAddressService = async (
   }
 };
 
-module.exports = { getAllAddressesService, createAddressService };
+module.exports = {
+  getAllAddressesService,
+  createAddressService,
+};

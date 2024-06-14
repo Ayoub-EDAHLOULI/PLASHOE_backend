@@ -98,6 +98,25 @@ const updateProductService = async (
   }
 };
 
+//UPDATE the stock of a product
+const updateProductStockService = async (id, stock) => {
+  try {
+    const updatedProduct = await prisma.product.update({
+      where: {
+        id: parseInt(id),
+      },
+      data: {
+        stock,
+      },
+    });
+
+    //Return the updated product
+    return updatedProduct;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
 //DELETE a product
 const deleteProductService = async (id) => {
   try {
@@ -119,4 +138,5 @@ module.exports = {
   checkProduct,
   updateProductService,
   deleteProductService,
+  updateProductStockService,
 };
