@@ -2,7 +2,10 @@ const { ErrorHandler, handleError } = require("../utils/errorHandler");
 const { handleSuccess } = require("../utils/successHandler");
 
 //User Services
-const { getAllUsersInfoService } = require("../services/userInfoServices");
+const {
+  getAllUsersInfoService,
+  createUserInfoService,
+} = require("../services/userInfoServices");
 
 //GET all users info
 const getAllUsersInfo = async (req, res) => {
@@ -21,4 +24,40 @@ const getAllUsersInfo = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsersInfo };
+//POST create user info
+const createUserInfo = async (req, res) => {
+  try {
+    //Get the user id
+    const userId = req.user.id;
+
+    //Get the user info data from the request body
+    let { firstname, lastname, phone } = req.body;
+
+    //Check if the information is not empty and if it empty transform it to null
+    firstname = firstname ? firstname : null;
+    lastname = lastname ? lastname : null;
+    phone = phone ? phone : null;
+
+    //Check if the phone number is valid
+    if (phone) {
+      if (phone.length !== 10) {
+        throw new ErrorHandler(400, "Phone number must be 10 digits");
+      }
+    }
+
+    //Create the user info
+    const userInfo = await createUserInfoService(
+      userId,
+      firstname,
+      lastname,
+      phone
+    );
+
+    //Return the user info
+    handleSuccess(res, userInfo);
+  } catch (error) {
+    handleError(res, new ErrorHandler(500, error.message));
+  }
+};
+
+module.exports = { getAllUsersInfo, createUserInfo };

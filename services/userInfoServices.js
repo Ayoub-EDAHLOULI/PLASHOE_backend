@@ -1,6 +1,8 @@
 //User Services
 const prisma = require("../server");
 
+const { ErrorHandler } = require("../utils/errorHandler");
+
 //GET all users info
 const getAllUsersInfoService = async () => {
   try {
@@ -13,4 +15,27 @@ const getAllUsersInfoService = async () => {
   }
 };
 
-module.exports = { getAllUsersInfoService };
+//POST create user info
+const createUserInfoService = async (userId, firstname, lastname, phone) => {
+  try {
+    const userInfo = await prisma.userInfo.create({
+      data: {
+        firstname,
+        lastname,
+        phone,
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+    });
+
+    //Return the user info
+    return userInfo;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
+module.exports = { getAllUsersInfoService, createUserInfoService };
