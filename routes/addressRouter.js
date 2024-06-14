@@ -1,8 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-const { getAllAdresses } = require("../api/addressApi");
+const { getAllAdresses, createAddress } = require("../api/addressApi");
 
-router.get("/adresses", getAllAdresses);
+const { isAuthenticated } = require("../middleware/authMiddleware");
+
+router.get("/addresses", getAllAdresses);
+router.post("/address", isAuthenticated, createAddress);
 
 module.exports = router;

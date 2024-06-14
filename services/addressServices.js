@@ -15,4 +15,36 @@ const getAllAddressesService = async () => {
   }
 };
 
-module.exports = { getAllAddressesService };
+//POST create user address
+const createAddressService = async (
+  userId,
+  streetName,
+  appartName,
+  city,
+  state,
+  zip
+) => {
+  try {
+    const address = await prisma.address.create({
+      data: {
+        streetName,
+        appartName,
+        city,
+        state,
+        zip,
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+    });
+
+    //Return the address
+    return address;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
+module.exports = { getAllAddressesService, createAddressService };
