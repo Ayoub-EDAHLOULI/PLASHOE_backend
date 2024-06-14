@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-const { getAllUsersInfo, createUserInfo } = require("../api/userInfoApi");
+const {
+  getAllUsersInfo,
+  createUserInfo,
+  getUserInfo,
+} = require("../api/userInfoApi");
 
 const {
   isAuthenticated,
@@ -15,5 +19,6 @@ router.get(
   getAllUsersInfo
 );
 router.post("/userInfo", isAuthenticated, createUserInfo);
+router.get("/userInfo", isAuthenticated, getUserInfo);
 
 module.exports = router;

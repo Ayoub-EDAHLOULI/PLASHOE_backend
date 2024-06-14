@@ -5,6 +5,7 @@ const { handleSuccess } = require("../utils/successHandler");
 const {
   getAllUsersInfoService,
   createUserInfoService,
+  getUserInfoService,
 } = require("../services/userInfoServices");
 
 //GET all users info
@@ -19,6 +20,27 @@ const getAllUsersInfo = async (req, res) => {
 
     //Return the users
     handleSuccess(res, usersInfo);
+  } catch (error) {
+    handleError(res, new ErrorHandler(500, error.message));
+  }
+};
+
+//GET user info
+const getUserInfo = async (req, res) => {
+  try {
+    //Get the user id
+    const userId = req.user.id;
+
+    //Get the user info
+    const userInfo = await getUserInfoService(userId);
+
+    //Check if there is no user info
+    if (!userInfo) {
+      throw new ErrorHandler(404, "No user info found");
+    }
+
+    //Return the user info
+    handleSuccess(res, userInfo);
   } catch (error) {
     handleError(res, new ErrorHandler(500, error.message));
   }
@@ -60,4 +82,4 @@ const createUserInfo = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsersInfo, createUserInfo };
+module.exports = { getAllUsersInfo, createUserInfo, getUserInfo };

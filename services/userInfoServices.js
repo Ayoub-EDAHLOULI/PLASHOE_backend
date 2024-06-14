@@ -38,4 +38,24 @@ const createUserInfoService = async (userId, firstname, lastname, phone) => {
   }
 };
 
-module.exports = { getAllUsersInfoService, createUserInfoService };
+//GET user info
+const getUserInfoService = async (userId) => {
+  try {
+    const userInfo = await prisma.userInfo.findUnique({
+      where: {
+        userId,
+      },
+    });
+
+    //Return the user info
+    return userInfo;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
+module.exports = {
+  getAllUsersInfoService,
+  createUserInfoService,
+  getUserInfoService,
+};
