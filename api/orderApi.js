@@ -2,12 +2,16 @@ const { ErrorHandler, handleError } = require("../utils/errorHandler");
 const { handleSuccess } = require("../utils/successHandler");
 
 //Order Services
-const { createOrderService } = require("../services/orderServices");
+const {
+  createOrderService,
+  getUserOrdersService,
+} = require("../services/orderServices");
 const {
   getUserCardByIdService,
   clearUserCardService,
 } = require("../services/cardServices");
 const { createOrderItemService } = require("../services/orderItemServices");
+const { order } = require("../server");
 
 //POST create order
 const createOrder = async (req, res) => {
@@ -72,6 +76,23 @@ const createOrder = async (req, res) => {
   }
 };
 
+//GET the user orders
+const getUserOrders = async (req, res) => {
+  try {
+    //Get the userId from the request
+    const userId = req.user.id;
+
+    //Fetch the orders
+    const orders = await getUserOrdersService(userId);
+
+    //Return the orders
+    handleSuccess(res, orders);
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
 module.exports = {
   createOrder,
+  getUserOrders,
 };
