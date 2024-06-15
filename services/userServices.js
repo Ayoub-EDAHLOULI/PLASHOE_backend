@@ -1,6 +1,9 @@
 //User Services
 const prisma = require("../server");
 
+//Error Handler
+const { ErrorHandler } = require("../utils/errorHandler");
+
 //GET all users
 const getAllUsersService = async () => {
   try {

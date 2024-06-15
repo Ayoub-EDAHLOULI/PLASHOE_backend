@@ -11,7 +11,6 @@ const {
   clearUserCardService,
 } = require("../services/cardServices");
 const { createOrderItemService } = require("../services/orderItemServices");
-const { order } = require("../server");
 
 //POST create order
 const createOrder = async (req, res) => {
