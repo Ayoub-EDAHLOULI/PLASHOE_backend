@@ -67,4 +67,25 @@ const updateCardService = async (cardId, quantity) => {
   }
 };
 
-module.exports = { createCardService, getUserCardService, updateCardService };
+//Delete the card
+const deleteCardService = async (cardId) => {
+  try {
+    const card = await prisma.cart.delete({
+      where: {
+        id: cardId,
+      },
+    });
+
+    //Return the card
+    return card;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
+module.exports = {
+  createCardService,
+  getUserCardService,
+  updateCardService,
+  deleteCardService,
+};

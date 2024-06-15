@@ -6,6 +6,7 @@ const {
   createCardService,
   getUserCardService,
   updateCardService,
+  deleteCardService,
 } = require("../services/cardServices");
 const {
   getOneProductService,
@@ -148,4 +149,29 @@ const updateCard = async (req, res) => {
   }
 };
 
-module.exports = { createCard, getUserCard, updateCard };
+//DELETE a card
+const deleteCard = async (req, res) => {
+  try {
+    //Get the cardId from the request params
+    const cardId = Number(req.params.id);
+
+    //Get the userId
+    const userId = req.user.id;
+
+    //Fetch the card from the database
+    const cardItem = await getUserCardService(userId, cardId);
+    if (!cardItem) {
+      throw new ErrorHandler(404, "Card not found");
+    }
+
+    //Delete the card
+    await deleteCardService(cardId);
+
+    //Return the card
+    handleSuccess(res, null, 200, "Card deleted successfully");
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+module.exports = { createCard, getUserCard, updateCard, deleteCard };
