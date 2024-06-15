@@ -7,6 +7,7 @@ const {
   getUserCardService,
   updateCardService,
   deleteCardService,
+  getUserCardByIdService,
 } = require("../services/cardServices");
 const {
   getOneProductService,
@@ -76,7 +77,7 @@ const getUserCard = async (req, res) => {
     const userId = req.user.id;
 
     //Get the user card
-    const card = await getUserCardService(userId);
+    const card = await getUserCardByIdService(userId);
 
     //Return the card
     handleSuccess(res, card, 200, "User card retrieved successfully");

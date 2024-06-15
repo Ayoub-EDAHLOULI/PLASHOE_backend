@@ -48,6 +48,25 @@ const getUserCardService = async (userId, cardId) => {
   }
 };
 
+//GET the user card by id
+const getUserCardByIdService = async (userId) => {
+  try {
+    const card = await prisma.cart.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        product: true,
+      },
+    });
+
+    //Return the card
+    return card;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
 //Update the card
 const updateCardService = async (cardId, quantity) => {
   try {
@@ -83,9 +102,24 @@ const deleteCardService = async (cardId) => {
   }
 };
 
+//Clear the user card
+const clearUserCardService = async (userId) => {
+  try {
+    await prisma.cart.deleteMany({
+      where: {
+        userId,
+      },
+    });
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
 module.exports = {
   createCardService,
   getUserCardService,
   updateCardService,
   deleteCardService,
+  getUserCardByIdService,
+  clearUserCardService,
 };

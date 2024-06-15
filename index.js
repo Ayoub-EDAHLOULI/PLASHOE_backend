@@ -6,6 +6,7 @@ const categoryRouter = require("./routes/categoryRouter");
 const userInfoRouter = require("./routes/userInfoRouter");
 const addressRouter = require("./routes/addressRouter");
 const cardRouter = require("./routes/cardRouter");
+const orderRouter = require("./routes/orderRouter");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -36,6 +37,9 @@ app.use("/api/v1", addressRouter);
 
 //Card routes
 app.use("/api/v1", cardRouter);
+
+//Order routes
+app.use("/api/v1", orderRouter);
 
 //Server
 app.listen(PORT, hostman, () => {
