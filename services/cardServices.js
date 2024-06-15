@@ -29,11 +29,12 @@ const createCardService = async (userId, productId, quantity) => {
 };
 
 //GET the user card
-const getUserCardService = async (userId) => {
+const getUserCardService = async (userId, cardId) => {
   try {
     const card = await prisma.cart.findMany({
       where: {
         userId,
+        id: cardId,
       },
       include: {
         product: true,
@@ -47,4 +48,23 @@ const getUserCardService = async (userId) => {
   }
 };
 
-module.exports = { createCardService, getUserCardService };
+//Update the card
+const updateCardService = async (cardId, quantity) => {
+  try {
+    const card = await prisma.cart.update({
+      where: {
+        id: cardId,
+      },
+      data: {
+        quantity,
+      },
+    });
+
+    //Return the card
+    return card;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
+module.exports = { createCardService, getUserCardService, updateCardService };

@@ -5,6 +5,7 @@ const { handleSuccess } = require("../utils/successHandler");
 const {
   createCardService,
   getUserCardService,
+  updateCardService,
 } = require("../services/cardServices");
 const {
   getOneProductService,
@@ -83,4 +84,68 @@ const getUserCard = async (req, res) => {
   }
 };
 
-module.exports = { createCard, getUserCard };
+//PUT update card
+const updateCard = async (req, res) => {
+  try {
+    //Get the cardId from the request params
+    const cardId = Number(req.params.id);
+
+    //Get the userId
+    const userId = req.user.id;
+
+    //Get the quantity from the request body
+    const { productId, quantity } = req.body;
+
+    //Check if the cardId and quantity are not empty
+    if (!cardId || !quantity) {
+      throw new ErrorHandler(400, "Card id and quantity are required");
+    }
+
+    //Check if the quantity is a number
+    if (isNaN(quantity)) {
+      throw new ErrorHandler(400, "Quantity must be a number");
+    }
+
+    //Check if the quantity is greater than 0
+    if (quantity <= 0) {
+      throw new ErrorHandler(400, "Quantity must be greater than 0");
+    }
+
+    //Fetch the card from the database
+    const cardItem = await getUserCardService(userId, cardId);
+    if (!cardItem) {
+      throw new ErrorHandler(404, "Card not found");
+    }
+
+    //Calculate the change in quantity
+    const quantityChange = quantity - cardItem[0].quantity;
+
+    //Fetch the product from the database
+    const product = await getOneProductService(productId);
+
+    //Check if theire is enough stock to update the card quantity if the quantity is increased
+    if (quantityChange > 0) {
+      if (product.stock < quantityChange) {
+        throw new ErrorHandler(400, "The stock is not enough");
+      }
+    }
+
+    //Update the card
+    const card = await updateCardService(cardId, quantity);
+
+    //Update the product stock
+
+    quantityChange > 0
+      ? (product.stock -= quantityChange)
+      : (product.stock += Math.abs(quantityChange));
+
+    await updateProductStockService(product.id, product.stock);
+
+    //Return the card
+    handleSuccess(res, card, 200, "Card updated successfully");
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+module.exports = { createCard, getUserCard, updateCard };

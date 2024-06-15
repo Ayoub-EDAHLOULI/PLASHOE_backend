@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { createCard, getUserCard } = require("../api/cardApi");
+const { createCard, getUserCard, updateCard } = require("../api/cardApi");
 
 const { isAuthenticated } = require("../middleware/authMiddleware");
 
@@ -9,5 +9,6 @@ const { isAuthenticated } = require("../middleware/authMiddleware");
 router
   .post("/card", isAuthenticated, createCard)
   .get("/card", isAuthenticated, getUserCard);
+router.put("/card/:id", isAuthenticated, updateCard);
 
 module.exports = router;

@@ -101,6 +101,9 @@ const updateProductService = async (
 //UPDATE the stock of a product
 const updateProductStockService = async (id, stock) => {
   try {
+    console.log("Product Id From Service =====================> ", id);
+    console.log("Product Stock From Service =====================> ", stock);
+
     const updatedProduct = await prisma.product.update({
       where: {
         id: parseInt(id),
