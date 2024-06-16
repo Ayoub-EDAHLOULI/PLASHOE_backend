@@ -6,6 +6,7 @@ const {
   createReview,
   getProductReviews,
   updateReview,
+  deleteReview,
 } = require("../api/reviewApi");
 
 const {
@@ -21,6 +22,12 @@ router
     isAuthenticated,
     isAuthorized("ADMIN", "CUSTOMER"),
     updateReview
+  )
+  .delete(
+    "/review/:id",
+    isAuthenticated,
+    isAuthorized("ADMIN", "CUSTOMER"),
+    deleteReview
   );
 
 module.exports = router;

@@ -87,9 +87,25 @@ const getReviewService = async (reviewId) => {
   }
 };
 
+//DELETE review
+const deleteReviewService = async (reviewId) => {
+  try {
+    const deletedReview = await prisma.review.delete({
+      where: {
+        id: reviewId,
+      },
+    });
+
+    return deletedReview;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
 module.exports = {
   createReviewService,
   getProductReviewsService,
   updateReviewService,
   getReviewService,
+  deleteReviewService,
 };

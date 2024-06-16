@@ -7,6 +7,7 @@ const {
   getProductReviewsService,
   updateReviewService,
   getReviewService,
+  deleteReviewService,
 } = require("../services/reviewServices");
 const { getOneProductService } = require("../services/productServices");
 
@@ -140,4 +141,41 @@ const updateReview = async (req, res) => {
   }
 };
 
-module.exports = { createReview, getProductReviews, updateReview };
+//DELETE review
+const deleteReview = async (req, res) => {
+  try {
+    //Get the reviewId from the request params
+    const reviewId = Number(req.params.id);
+
+    //Check if the review exists
+    const review = await getReviewService(reviewId);
+    if (!review) {
+      throw new ErrorHandler(404, "Review not found");
+    }
+
+    //Check if the user is the owner of the review
+    const reviewDataCheck = await getReviewService(reviewId);
+
+    if (req.user.id !== reviewDataCheck.userId) {
+      throw new ErrorHandler(
+        403,
+        "You are not authorized to perform this action"
+      );
+    }
+
+    //Delete the review
+    const deletedReview = await deleteReviewService(reviewId);
+
+    //Return the deleted review
+    handleSuccess(res, deletedReview, 200, "Review deleted successfully");
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+module.exports = {
+  createReview,
+  getProductReviews,
+  updateReview,
+  deleteReview,
+};
