@@ -7,6 +7,7 @@ const {
   getAllPaymentsService,
   getPaymentByIdService,
   updatePaymentService,
+  deletePaymentService,
 } = require("../services/paymentServices");
 const { getOrderByIdService } = require("../services/orderServices");
 const { clearUserCardService } = require("../services/cardServices");
@@ -139,9 +140,47 @@ const updatePayment = async (req, res) => {
   }
 };
 
+//DELETE payment
+const deletePayment = async (req, res) => {
+  try {
+    //Get the paymentId
+    const paymentId = Number(req.params.id);
+    const userId = req.user.id;
+
+    //Check if the user is the owner of the payment
+    const payment = await getPaymentByIdService(paymentId);
+
+    if (payment.userId !== userId) {
+      throw new ErrorHandler(
+        403,
+        "You are not authorized to delete this payment"
+      );
+    }
+
+    //Check if the paymentId is a number
+    if (isNaN(paymentId)) {
+      throw new ErrorHandler(400, "Payment id must be a number");
+    }
+
+    //Check if the payment exists
+    if (!payment) {
+      throw new ErrorHandler(404, "Payment not found");
+    }
+
+    //Delete the payment
+    await deletePaymentService(paymentId);
+
+    //Return success message
+    handleSuccess(res, null, 200, "Payment deleted successfully");
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
 module.exports = {
   createPayment,
   getAllPayments,
   getPaymentById,
   updatePayment,
+  deletePayment,
 };

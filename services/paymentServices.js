@@ -95,9 +95,26 @@ const updatePaymentService = async (paymentId, payment_method) => {
   }
 };
 
+//DELETE payment
+const deletePaymentService = async (paymentId) => {
+  try {
+    const payment = await prisma.payment.delete({
+      where: {
+        id: paymentId,
+      },
+    });
+
+    //Return the payment
+    return payment;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
 module.exports = {
   createPaymentService,
   getAllPaymentsService,
   getPaymentByIdService,
   updatePaymentService,
+  deletePaymentService,
 };

@@ -7,6 +7,7 @@ const {
   getAllPayments,
   getPaymentById,
   updatePayment,
+  deletePayment,
 } = require("../api/paymentApi");
 
 const {
@@ -25,6 +26,12 @@ router
     isAuthenticated,
     isAuthorized("ADMIN", "CUSTOMER"),
     updatePayment
+  )
+  .delete(
+    "/payment/:id",
+    isAuthenticated,
+    isAuthorized("ADMIN"),
+    deletePayment
   );
 
 module.exports = router;
