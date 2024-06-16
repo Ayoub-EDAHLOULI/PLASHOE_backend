@@ -2,7 +2,10 @@ const { ErrorHandler, handleError } = require("../utils/errorHandler");
 const { handleSuccess } = require("../utils/successHandler");
 
 //Payment Services
-const { createPaymentService } = require("../services/paymentServices");
+const {
+  createPaymentService,
+  getAllPaymentsService,
+} = require("../services/paymentServices");
 const { getOrderByIdService } = require("../services/orderServices");
 const { clearUserCardService } = require("../services/cardServices");
 
@@ -52,6 +55,20 @@ const createPayment = async (req, res) => {
   }
 };
 
+//GET all payments
+const getAllPayments = async (req, res) => {
+  try {
+    //Get all payments
+    const payments = await getAllPaymentsService();
+
+    //Return the payments
+    handleSuccess(res, payments, 200, "Payments retrieved successfully");
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
 module.exports = {
   createPayment,
+  getAllPayments,
 };

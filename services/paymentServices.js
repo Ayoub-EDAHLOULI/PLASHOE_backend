@@ -38,6 +38,24 @@ const createPaymentService = async (
   }
 };
 
+//GET all payments
+const getAllPaymentsService = async () => {
+  try {
+    const payments = await prisma.payment.findMany({
+      include: {
+        user: true,
+        order: true,
+      },
+    });
+
+    //Return the payments
+    return payments;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
 module.exports = {
   createPaymentService,
+  getAllPaymentsService,
 };
