@@ -5,6 +5,7 @@ const { handleSuccess } = require("../utils/successHandler");
 const {
   createOrderService,
   getUserOrdersService,
+  getOrderByIdService,
 } = require("../services/orderServices");
 const {
   getUserCardByIdService,
@@ -65,9 +66,6 @@ const createOrder = async (req, res) => {
       );
     }
 
-    //Clear the user cart
-    await clearUserCardService(userId);
-
     //Return the order
     handleSuccess(201, "Order created successfully", order, res);
   } catch (error) {
@@ -91,7 +89,34 @@ const getUserOrders = async (req, res) => {
   }
 };
 
+//GET the order by id
+const getOrderById = async (req, res) => {
+  try {
+    //Get the orderId from the request params
+    const orderId = Number(req.params.id);
+
+    //Check if the orderId is a number
+    if (isNaN(orderId)) {
+      throw new ErrorHandler(400, "Order id must be a number");
+    }
+
+    //Fetch the order
+    const order = await getOrderByIdService(orderId);
+
+    //Check if the order exists
+    if (!order) {
+      throw new ErrorHandler(404, "Order not found");
+    }
+
+    //Return the order
+    handleSuccess(res, order, 200, "Order retrieved successfully");
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
 module.exports = {
   createOrder,
   getUserOrders,
+  getOrderById,
 };
