@@ -5,9 +5,11 @@ const { handleSuccess } = require("../utils/successHandler");
 const {
   createPaymentService,
   getAllPaymentsService,
+  getPaymentByIdService,
 } = require("../services/paymentServices");
 const { getOrderByIdService } = require("../services/orderServices");
 const { clearUserCardService } = require("../services/cardServices");
+const { get } = require("../routes/paymentRouter");
 
 //POST create payment
 const createPayment = async (req, res) => {
@@ -68,7 +70,34 @@ const getAllPayments = async (req, res) => {
   }
 };
 
+//GET payment by id
+const getPaymentById = async (req, res) => {
+  try {
+    //Get the paymentId
+    const paymentId = Number(req.params.id);
+
+    //Check if the paymentId is a number
+    if (isNaN(paymentId)) {
+      throw new ErrorHandler(400, "Payment id must be a number");
+    }
+
+    //Get the payment
+    const payment = await getPaymentByIdService(paymentId);
+
+    //Check if the payment exists
+    if (!payment) {
+      throw new ErrorHandler(404, "Payment not found");
+    }
+
+    //Return the payment
+    handleSuccess(res, payment, 200, "Payment retrieved successfully");
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
 module.exports = {
   createPayment,
   getAllPayments,
+  getPaymentById,
 };

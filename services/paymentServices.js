@@ -55,7 +55,28 @@ const getAllPaymentsService = async () => {
   }
 };
 
+//GET payment by id
+const getPaymentByIdService = async (paymentId) => {
+  try {
+    const payment = await prisma.payment.findUnique({
+      where: {
+        id: paymentId,
+      },
+      include: {
+        user: true,
+        order: true,
+      },
+    });
+
+    //Return the payment
+    return payment;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
 module.exports = {
   createPaymentService,
   getAllPaymentsService,
+  getPaymentByIdService,
 };
