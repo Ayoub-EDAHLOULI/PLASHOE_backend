@@ -2,7 +2,10 @@ const { ErrorHandler, handleError } = require("../utils/errorHandler");
 const { handleSuccess } = require("../utils/successHandler");
 
 //Review Services
-const { createReviewService } = require("../services/reviewServices");
+const {
+  createReviewService,
+  getProductReviewsService,
+} = require("../services/reviewServices");
 const { getOneProductService } = require("../services/productServices");
 
 //POST create review
@@ -50,4 +53,36 @@ const createReview = async (req, res) => {
   }
 };
 
-module.exports = { createReview };
+//GET product reviews
+const getProductReviews = async (req, res) => {
+  try {
+    //Get the productId from the request params
+    const productId = Number(req.params.id);
+
+    //Check if the productId is a number
+    if (isNaN(productId)) {
+      throw new ErrorHandler(400, "Product id must be a number");
+    }
+
+    //Check if the product exists
+    const product = await getOneProductService(productId);
+
+    if (!product) {
+      throw new ErrorHandler(404, "Product not found");
+    }
+
+    //Get the product reviews
+    const reviews = await getProductReviewsService(productId);
+
+    if (reviews.length === 0) {
+      throw new ErrorHandler(404, "No reviews found for this product");
+    }
+
+    //Return the reviews
+    handleSuccess(res, reviews, 200, "Product reviews retrieved successfully");
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+module.exports = { createReview, getProductReviews };

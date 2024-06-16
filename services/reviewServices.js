@@ -31,4 +31,26 @@ const createReviewService = async (userId, productId, rating, review) => {
   }
 };
 
-module.exports = { createReviewService };
+//GET product reviews
+const getProductReviewsService = async (productId) => {
+  try {
+    const reviews = await prisma.review.findMany({
+      where: {
+        productId: productId,
+      },
+      include: {
+        user: {
+          select: {
+            username: true,
+          },
+        },
+      },
+    });
+
+    return reviews;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
+module.exports = { createReviewService, getProductReviewsService };
