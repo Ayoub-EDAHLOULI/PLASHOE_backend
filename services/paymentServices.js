@@ -75,8 +75,29 @@ const getPaymentByIdService = async (paymentId) => {
   }
 };
 
+//UPDATE payment
+const updatePaymentService = async (paymentId, payment_method) => {
+  try {
+    const payment = await prisma.payment.update({
+      where: {
+        id: paymentId,
+      },
+      data: {
+        payment_method,
+        payment_date: new Date(),
+      },
+    });
+
+    //Return the payment
+    return payment;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
 module.exports = {
   createPaymentService,
   getAllPaymentsService,
   getPaymentByIdService,
+  updatePaymentService,
 };
