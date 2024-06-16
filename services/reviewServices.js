@@ -53,4 +53,43 @@ const getProductReviewsService = async (productId) => {
   }
 };
 
-module.exports = { createReviewService, getProductReviewsService };
+//Update review
+const updateReviewService = async (reviewId, rating, review) => {
+  try {
+    const updatedReview = await prisma.review.update({
+      where: {
+        id: reviewId,
+      },
+      data: {
+        rating,
+        review,
+      },
+    });
+
+    return updatedReview;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
+//GET reviews by reviewId
+const getReviewService = async (reviewId) => {
+  try {
+    const review = await prisma.review.findUnique({
+      where: {
+        id: reviewId,
+      },
+    });
+
+    return review;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
+module.exports = {
+  createReviewService,
+  getProductReviewsService,
+  updateReviewService,
+  getReviewService,
+};

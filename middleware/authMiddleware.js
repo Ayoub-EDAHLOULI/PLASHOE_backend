@@ -36,10 +36,19 @@ const isAuthenticated = async (req, res, next) => {
 };
 
 //Authorization
-const isAuthorized = (role) => {
-  return (req, res, next) => {
-    if (req.user.role !== role)
-      handleError(res, new ErrorHandler(403, "Access denied. Not authorized"));
+//Middleware to check if user is authorized
+const isAuthorized = (...roles) => {
+  return async (req, res, next) => {
+    if (!req.user)
+      handleError(res, new ErrorHandler(401, " You are not authenticated"));
+
+    //Check if the user role is in the roles array
+    if (!roles.includes(req.user.role))
+      handleError(
+        res,
+        new ErrorHandler(403, "You are not authorized to perform this action")
+      );
+
     next();
   };
 };

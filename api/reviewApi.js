@@ -5,6 +5,8 @@ const { handleSuccess } = require("../utils/successHandler");
 const {
   createReviewService,
   getProductReviewsService,
+  updateReviewService,
+  getReviewService,
 } = require("../services/reviewServices");
 const { getOneProductService } = require("../services/productServices");
 
@@ -85,4 +87,57 @@ const getProductReviews = async (req, res) => {
   }
 };
 
-module.exports = { createReview, getProductReviews };
+//Update review
+const updateReview = async (req, res) => {
+  try {
+    //Get the reviewId from the request params
+    const reviewId = Number(req.params.id);
+
+    //Get the rating and review from the request body
+    const { rating, review } = req.body;
+
+    //Check if the user is the owner of the review
+    const reviewDataCheck = await getReviewService(reviewId);
+
+    if (req.user.id !== reviewDataCheck.userId) {
+      throw new ErrorHandler(
+        403,
+        "You are not authorized to perform this action"
+      );
+    }
+
+    //Check if the rating and comment are not empty
+    if (Object.keys(req.body).length === 0) {
+      throw new ErrorHandler(400, "Rating or review is required");
+    }
+
+    const reviewData = {
+      rating,
+      review,
+    };
+
+    //Remove the empty fields from the request body
+    Object.keys(reviewData).forEach(
+      (key) => reviewData[key] === undefined && delete reviewData[key]
+    );
+
+    //Check if the rating is between 1 and 5
+    if (reviewData.rating && (reviewData.rating < 1 || reviewData.rating > 5)) {
+      throw new ErrorHandler(400, "Rating must be between 1 and 5");
+    }
+
+    //Update the review
+    const updatedReview = await updateReviewService(
+      reviewId,
+      reviewData.rating,
+      reviewData.review
+    );
+
+    //Return the updated review
+    handleSuccess(res, updatedReview, 200, "Review updated successfully");
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+module.exports = { createReview, getProductReviews, updateReview };
