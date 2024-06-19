@@ -13,9 +13,19 @@ const paymentRouter = require("./routes/paymentRouter");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const hostman = process.env.HOSTMAN || "127.0.0.1";
+const cors = require("cors");
 
 //Middleware to parse JSON data
 app.use(express.json());
+
+//CORS
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    credentials: true,
+  })
+);
 
 //Routes
 
