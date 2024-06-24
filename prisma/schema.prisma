@@ -30,6 +30,7 @@ model User {
   address   Address?
   userInfo  UserInfo?
   products  Product[]
+  categories Category[]
   cart     Cart[]
   orders   Order[]
   reviews  Review[]
@@ -169,6 +170,8 @@ model Category {
 
   //Relationships
   products  Product[]
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
 }
 
 //Enum for the Role
