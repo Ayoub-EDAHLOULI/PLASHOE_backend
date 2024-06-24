@@ -24,6 +24,12 @@ const getOneUserService = async (id) => {
       where: {
         id: parseInt(id),
       },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        role: true,
+      },
     });
 
     //Return the user
