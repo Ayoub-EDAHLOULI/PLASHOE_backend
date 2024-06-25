@@ -8,6 +8,7 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
+  uploadImage,
 } = require("../api/productApi");
 
 //Auth and Authorization middleware
@@ -15,6 +16,9 @@ const {
   isAuthenticated,
   isAuthorized,
 } = require("../middleware/authMiddleware");
+
+//Multer Middleware
+const upload = require("../middleware/multerMiddleware");
 
 //Get all products
 router.get("/products", getAllProducts);
@@ -28,5 +32,8 @@ router
     deleteProduct
   );
 router.post("/product", isAuthenticated, isAuthorized("ADMIN"), createProduct);
+
+//Upload image
+router.post("/upload", isAuthenticated, upload.single("image"), uploadImage);
 
 module.exports = router;

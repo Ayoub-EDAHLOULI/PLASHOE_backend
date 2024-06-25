@@ -266,4 +266,5 @@ module.exports = {
   createProduct,
   updateProduct,
   deleteProduct,
+  uploadImage,
 };
