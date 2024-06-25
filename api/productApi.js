@@ -39,6 +39,26 @@ const getOneProduct = async (req, res) => {
   }
 };
 
+//Upload image
+const uploadImage = async (req, res) => {
+  try {
+    //Get the image from the request
+    const file = req.file;
+
+    //Check if the image is provided
+    if (!file) {
+      throw new ErrorHandler(400, "Please provide an image");
+    }
+
+    const imageUrl = `http://127.0.0.1:3000/images/${req.file.filename}`;
+
+    //Return the image
+    handleSuccess(res, imageUrl, 200, "Image uploaded successfully");
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
 //Create a new product
 const createProduct = async (req, res) => {
   try {
