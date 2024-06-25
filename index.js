@@ -27,6 +27,8 @@ app.use(
   })
 );
 
+app.use(express.static("public"));
+
 //Routes
 
 //Auth routes
