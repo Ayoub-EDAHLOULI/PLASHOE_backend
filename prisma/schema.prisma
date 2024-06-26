@@ -47,7 +47,7 @@ model Address {
   zip      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int @unique
 }
 
@@ -59,7 +59,7 @@ model UserInfo {
   phone      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int @unique
 }
 
@@ -80,7 +80,7 @@ model Product {
   cart     Cart[]
   orderItems      OrderItem[]
   reviews  Review[]
-  category Category @relation(fields: [categoryId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId Int
 }
 
@@ -92,9 +92,9 @@ model Cart {
   updatedAt DateTime @updatedAt
 
   //Relationships
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
-  product      Product     @relation(fields: [productId], references: [id])
+  product      Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId    Int
 }
 
@@ -108,7 +108,7 @@ model Order {
   updatedAt DateTime @updatedAt
 
   //Relationships
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id],  onDelete: Cascade)
   userId    Int
   orderItems      OrderItem[]
   payments Payment[]
@@ -124,9 +124,9 @@ model OrderItem {
   updatedAt DateTime @updatedAt
 
   //Relationships
-  order      Order     @relation(fields: [orderId], references: [id])
+  order      Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId    Int
-  product      Product     @relation(fields: [productId], references: [id])
+  product      Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId    Int
 }
 
@@ -139,9 +139,9 @@ model Review {
   updatedAt DateTime @updatedAt
 
   //Relationships
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
-  product      Product     @relation(fields: [productId], references: [id])
+  product      Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId    Int
 }
 

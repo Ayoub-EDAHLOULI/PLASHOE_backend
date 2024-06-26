@@ -65,8 +65,6 @@ const createProduct = async (req, res) => {
     //Get the product data from the request body
     const { name, description, price, stock, image, categoryId } = req.body;
 
-    console.log("Req", req.user);
-
     //Get the user id from the request
     const userId = req.user.id;
 
