@@ -63,12 +63,12 @@ const uploadImage = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     //Get the product data from the request body
-    const { name, description, price, stock, categoryId } = req.body;
+    const { name, description, price, stock, image, categoryId } = req.body;
+
+    console.log("Req", req.user);
 
     //Get the user id from the request
     const userId = req.user.id;
-
-    console.log("User ID", userId);
 
     //Check if name, price, description and stock are provided
     if (!name || !price || !description || !stock) {
@@ -77,19 +77,6 @@ const createProduct = async (req, res) => {
         "Please provide name, price, description and stock"
       );
     }
-
-    console.log(
-      "Name",
-      name,
-      "Price",
-      price,
-      "Description",
-      description,
-      "Stock",
-      stock,
-      "CatgoryId",
-      categoryId
-    );
 
     //Check if the price and stock are numbers
     if (isNaN(price) || isNaN(stock)) {
@@ -122,10 +109,11 @@ const createProduct = async (req, res) => {
     const newProduct = await createProductService(
       name,
       description,
-      price,
-      stock,
+      Number(price),
+      Number(stock),
+      image,
       userId,
-      categoryId
+      Number(categoryId)
     );
 
     //Return the product

@@ -35,6 +35,7 @@ const createProductService = async (
   description,
   price,
   stock,
+  image,
   userId,
   categoryId
 ) => {
@@ -45,6 +46,7 @@ const createProductService = async (
         description,
         price,
         stock,
+        image,
         userId,
         categoryId,
       },

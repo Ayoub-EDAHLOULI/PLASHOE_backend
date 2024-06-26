@@ -34,6 +34,6 @@ router
 router.post("/product", isAuthenticated, isAuthorized("ADMIN"), createProduct);
 
 //Upload image
-router.post("/upload", isAuthenticated, upload.single("image"), uploadImage);
+router.post("/upload", upload.single("image"), uploadImage);
 
 module.exports = router;
