@@ -14,11 +14,12 @@ const getAllCategoriesService = async () => {
 };
 
 //POST a new category
-const createCategoryService = async (name) => {
+const createCategoryService = async (name, userId) => {
   try {
     const newCategory = await prisma.category.create({
       data: {
         name,
+        userId,
       },
     });
 

@@ -51,6 +51,9 @@ const createCategory = async (req, res) => {
     //Get the category data from the request body
     const { name } = req.body;
 
+    //Get the userId from the request
+    const userId = req.user.id;
+
     //Check if the name is provided
     if (!name) {
       throw new ErrorHandler(400, "Please provide a name");
@@ -63,7 +66,7 @@ const createCategory = async (req, res) => {
     }
 
     //Create the category
-    const newCategory = await createCategoryService(name);
+    const newCategory = await createCategoryService(name, userId);
 
     //Return the new category
     handleSuccess(res, newCategory, 201, "Category created successfully");
