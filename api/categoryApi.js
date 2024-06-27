@@ -84,13 +84,16 @@ const updateCategory = async (req, res) => {
     //Get the category data from the request body
     const { name } = req.body;
 
+    //Switch Id to Number
+    const categoryId = Number(id);
+
     //Check if the name is provided
     if (!name) {
       throw new ErrorHandler(400, "Please provide a name");
     }
 
     //Check if the name is the same as the current one
-    const category = await getOneCategoryService(id);
+    const category = await getOneCategoryService(categoryId);
     if (category.name === name) {
       throw new ErrorHandler(
         400,
@@ -105,7 +108,7 @@ const updateCategory = async (req, res) => {
     }
 
     //Update the category
-    const updatedCategory = await updateCategoryService(id, name);
+    const updatedCategory = await updateCategoryService(categoryId, name);
 
     //Return the updated category
     handleSuccess(res, updatedCategory, 200, "Category updated successfully");
