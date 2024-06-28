@@ -242,7 +242,7 @@ const deleteProduct = async (req, res) => {
     await deleteProductService(id);
 
     //Return the product
-    handleSuccess(res, null, 204, "Product deleted successfully");
+    handleSuccess(res, null, 200, "Product deleted successfully");
   } catch (error) {
     handleError(res, error);
   }
