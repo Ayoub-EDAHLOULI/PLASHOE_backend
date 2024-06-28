@@ -77,6 +77,7 @@ const updateProductService = async (
   description,
   price,
   stock,
+  image,
   categoryId
 ) => {
   try {
@@ -89,6 +90,7 @@ const updateProductService = async (
         description,
         price,
         stock,
+        image,
         categoryId,
       },
     });

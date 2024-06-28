@@ -99,7 +99,6 @@ const createProduct = async (req, res) => {
     //Check if the product already exists
     const productExists = await checkProduct(name);
     if (productExists) {
-      console.log("ProductExists", productExists);
       throw new ErrorHandler(400, "Product already exists");
     }
 
@@ -128,7 +127,7 @@ const updateProduct = async (req, res) => {
     const { id } = req.params;
 
     //Get the product data from the request body
-    const { name, description, price, stock, categoryId } = req.body;
+    const { name, description, price, stock, image, categoryId } = req.body;
 
     //Get the user id from the request
     const userId = req.user.id;
@@ -144,16 +143,18 @@ const updateProduct = async (req, res) => {
       description,
       price,
       stock,
+      image,
       categoryId,
     };
 
     //Remove the empty values
     Object.keys(productData).forEach(
-      (key) => productData[key] === undefined && delete productData[key]
+      (key) =>
+        (productData[key] === undefined ||
+          productData[key] === "" ||
+          productData[key] === 0) &&
+        delete productData[key]
     );
-
-    console.log("User ID", userId);
-    console.log("ProductData", productData);
 
     //Check if the price is not empty and a numbers
     if (productData.price && isNaN(productData.price)) {
@@ -203,6 +204,7 @@ const updateProduct = async (req, res) => {
       productData.description,
       productData.price,
       productData.stock,
+      productData.image,
       productData.categoryId
     );
 
