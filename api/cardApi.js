@@ -13,6 +13,7 @@ const {
   getOneProductService,
   updateProductStockService,
 } = require("../services/productServices");
+const { cart } = require("../server");
 
 //POST create card
 const createCard = async (req, res) => {
@@ -55,30 +56,26 @@ const createCard = async (req, res) => {
     }
 
     //Check if the product is already in the card
-    const cardItem = await getUserCardService(userId, productId);
+    const cardItem = await getUserCardByIdService(userId);
 
-    if (cardItem.length > 0) {
-      await updateCardService(cardItem[0].id, cardItem[0].quantity + quantity);
+    const productInCard = cardItem.find((item) => item.productId === productId);
+
+    if (productInCard) {
+      await updateCardService(
+        productInCard.id,
+        productInCard.quantity + quantity
+      );
     } else {
-      //Check if the product is already in the card
-      const cardItem = await getUserCardService(userId, productId);
-      if (cardItem.length > 0) {
-        await updateCardService(
-          cardItem[0].id,
-          cardItem[0].quantity + quantity
-        );
-      } else {
-        //Create the card
-        const card = await createCardService(userId, productId, quantity);
-
-        //Decrease the product stock
-        const newStock = product.stock - quantity;
-        await updateProductStockService(productId, newStock);
-
-        //Return the card
-        handleSuccess(res, card, 201, "Card created successfully");
-      }
+      //Create the card
+      await createCardService(userId, productId, quantity);
     }
+
+    //Update the product stock
+    product.stock -= quantity;
+    await updateProductStockService(productId, product.stock);
+
+    //Return the card
+    handleSuccess(res, null, 201, "Card created successfully");
   } catch (error) {
     handleError(res, error);
   }
