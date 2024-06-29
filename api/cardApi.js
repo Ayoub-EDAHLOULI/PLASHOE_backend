@@ -23,8 +23,6 @@ const createCard = async (req, res) => {
     //Get the userId, productId and quantity from the request body
     const { productId, quantity } = req.body;
 
-    console.log(req.body);
-
     //Check if the productId and quantity are not empty
     if (!productId || !quantity) {
       throw new ErrorHandler(400, "Product id and quantity are required");
@@ -56,15 +54,31 @@ const createCard = async (req, res) => {
       throw new ErrorHandler(400, "The stock is not enough");
     }
 
-    //Create the card
-    const card = await createCardService(userId, productId, quantity);
+    //Check if the product is already in the card
+    const cardItem = await getUserCardService(userId, productId);
 
-    //Decrease the product stock
-    const newStock = product.stock - quantity;
-    await updateProductStockService(productId, newStock);
+    if (cardItem.length > 0) {
+      await updateCardService(cardItem[0].id, cardItem[0].quantity + quantity);
+    } else {
+      //Check if the product is already in the card
+      const cardItem = await getUserCardService(userId, productId);
+      if (cardItem.length > 0) {
+        await updateCardService(
+          cardItem[0].id,
+          cardItem[0].quantity + quantity
+        );
+      } else {
+        //Create the card
+        const card = await createCardService(userId, productId, quantity);
 
-    //Return the card
-    handleSuccess(res, card, 201, "Card created successfully");
+        //Decrease the product stock
+        const newStock = product.stock - quantity;
+        await updateProductStockService(productId, newStock);
+
+        //Return the card
+        handleSuccess(res, card, 201, "Card created successfully");
+      }
+    }
   } catch (error) {
     handleError(res, error);
   }
