@@ -13,7 +13,6 @@ const {
   getOneProductService,
   updateProductStockService,
 } = require("../services/productServices");
-const { cart } = require("../server");
 
 //POST create card
 const createCard = async (req, res) => {
@@ -69,10 +68,6 @@ const createCard = async (req, res) => {
       //Create the card
       await createCardService(userId, productId, quantity);
     }
-
-    //Update the product stock
-    product.stock -= quantity;
-    await updateProductStockService(productId, product.stock);
 
     //Return the card
     handleSuccess(res, null, 201, "Card created successfully");
@@ -145,14 +140,6 @@ const updateCard = async (req, res) => {
 
     //Update the card
     const card = await updateCardService(cardId, quantity);
-
-    //Update the product stock
-
-    quantityChange > 0
-      ? (product.stock -= quantityChange)
-      : (product.stock += Math.abs(quantityChange));
-
-    await updateProductStockService(product.id, product.stock);
 
     //Return the card
     handleSuccess(res, card, 200, "Card updated successfully");
