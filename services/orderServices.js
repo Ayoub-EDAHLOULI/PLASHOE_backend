@@ -71,8 +71,33 @@ const getOrderByIdService = async (orderId) => {
   }
 };
 
+// Decrease the stock of the products
+const decreaseProductStockService = async (productId, quantity) => {
+  try {
+    const product = await prisma.product.findUnique({
+      where: {
+        id: productId,
+      },
+    });
+
+    const newStock = product.stock - quantity;
+
+    await prisma.product.update({
+      where: {
+        id: productId,
+      },
+      data: {
+        stock: newStock,
+      },
+    });
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
 module.exports = {
   createOrderService,
   getUserOrdersService,
   getOrderByIdService,
+  decreaseProductStockService,
 };

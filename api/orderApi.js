@@ -6,6 +6,7 @@ const {
   createOrderService,
   getUserOrdersService,
   getOrderByIdService,
+  decreaseProductStockService,
 } = require("../services/orderServices");
 const {
   getUserCardByIdService,
@@ -19,11 +20,12 @@ const createOrder = async (req, res) => {
     //Get the userId from the request
     const userId = req.user.id;
 
+    // Total
+    const { total } = req.body;
+
     //Create the shipping date
     const shipping_date = new Date();
     shipping_date.setDate(shipping_date.getDate() + 7);
-
-    console.log("Shipping Date =================>", shipping_date);
 
     //Get the current date
     const order_date = new Date();
@@ -35,11 +37,6 @@ const createOrder = async (req, res) => {
     if (cardItems.length === 0) {
       throw new ErrorHandler(400, "No items in the cart");
     }
-
-    // Calculate the total price
-    const total = cardItems.reduce((acc, item) => {
-      return acc + item.product.price * item.quantity;
-    }, 0);
 
     //Create the order
     const order = await createOrderService(
@@ -66,8 +63,17 @@ const createOrder = async (req, res) => {
       );
     }
 
+    // Decrease the stock of the products
+    for (let item of cardItems) {
+      const { productId, quantity } = item;
+      await decreaseProductStockService(productId, quantity);
+    }
+
+    //Clear the user cart
+    await clearUserCardService(userId);
+
     //Return the order
-    handleSuccess(201, "Order created successfully", order, res);
+    handleSuccess(res, order, 201, "Order created successfully");
   } catch (error) {
     handleError(res, error);
   }

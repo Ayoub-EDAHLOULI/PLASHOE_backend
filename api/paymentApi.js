@@ -49,7 +49,7 @@ const createPayment = async (req, res) => {
     );
 
     //Clear the user cart
-    // await clearUserCardService(userId);
+    await clearUserCardService(userId);
 
     //Return the payment
     handleSuccess(res, paymentData, 201, "Payment created successfully");
