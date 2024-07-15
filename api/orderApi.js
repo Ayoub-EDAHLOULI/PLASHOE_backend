@@ -7,6 +7,7 @@ const {
   getUserOrdersService,
   getOrderByIdService,
   decreaseProductStockService,
+  getAllOrdersService,
 } = require("../services/orderServices");
 const {
   getUserCardByIdService,
@@ -79,6 +80,19 @@ const createOrder = async (req, res) => {
   }
 };
 
+// GET all orders
+const getAllOrders = async (req, res) => {
+  try {
+    // Fetch all orders
+    const orders = await getAllOrdersService();
+
+    // Return the orders
+    handleSuccess(res, orders);
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
 //GET the user orders
 const getUserOrders = async (req, res) => {
   try {
@@ -125,4 +139,5 @@ module.exports = {
   createOrder,
   getUserOrders,
   getOrderById,
+  getAllOrders,
 };

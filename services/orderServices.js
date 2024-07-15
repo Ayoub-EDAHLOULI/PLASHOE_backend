@@ -25,6 +25,26 @@ const createOrderService = async (userId, order_date, total, shipping_date) => {
   }
 };
 
+//GET all orders
+const getAllOrdersService = async () => {
+  try {
+    const orders = await prisma.order.findMany({
+      include: {
+        orderItems: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+
+    //Return the orders
+    return orders;
+  } catch (error) {
+    throw new ErrorHandler(500, error.message);
+  }
+};
+
 //GET the user orders
 const getUserOrdersService = async (userId) => {
   try {
@@ -100,4 +120,5 @@ module.exports = {
   getUserOrdersService,
   getOrderByIdService,
   decreaseProductStockService,
+  getAllOrdersService,
 };
